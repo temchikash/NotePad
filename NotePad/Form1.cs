@@ -23,7 +23,7 @@ namespace NotePad
         private void шрифтToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FontDialog myFont = new FontDialog();
-            if(myFont.ShowDialog() == DialogResult.OK)
+            if (myFont.ShowDialog() == DialogResult.OK)
             {
                 richTextBox1.Font = myFont.Font;
             }
@@ -38,7 +38,7 @@ namespace NotePad
         {
             OpenFileDialog importFile = new OpenFileDialog();
             importFile.Filter = "all (*_*) | *.*";
-            if(importFile.ShowDialog() == DialogResult.OK)
+            if (importFile.ShowDialog() == DialogResult.OK)
             {
                 richTextBox1.Text = File.ReadAllText(importFile.FileName);
                 _openFile = importFile.FileName;
@@ -47,13 +47,18 @@ namespace NotePad
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
+            DialogResult result = MessageBox.Show("Хотите выйти?", "Выход", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
+            }
         }
 
         private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog openFile = new SaveFileDialog();
-            openFile.Filter = "all (*_*) | *.*";
+            openFile.Filter = "Текстовый документ (*.txt) | *.*";
             if (openFile.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllText(openFile.FileName, richTextBox1.Text);
@@ -61,35 +66,63 @@ namespace NotePad
             }
         }
 
-        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                File.WriteAllText(_openFile, richTextBox1.Text);
-            }
-            catch (ArgumentException)
-            {
-                MessageBox.Show("Ошибка при сохранении");
-            }
-               
-            
-        }
-
-        private void печатьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PrintDocument pDocument = new PrintDocument();
-            pDocument.PrintPage += Print;
-            PrintDialog pDialog = new PrintDialog();
-            pDialog.Document = pDocument;
-            if(pDialog.ShowDialog() == DialogResult.OK)
-            {
-                pDialog.Document.Print();
-            }
-        }
 
         public void Print(object sender, PrintPageEventArgs e)
         {
             e.Graphics.DrawString(richTextBox1.Text, richTextBox1.Font, Brushes.Black, 0, 0);
         }
+
+        private void Print(object sender, EventArgs e)
+        {
+            PrintDocument pDocunment = new PrintDocument();
+            pDocunment.PrintPage += Print;
+            PrintDialog pDialog = new PrintDialog();
+            pDialog.Document = pDocunment;
+            if (pDialog.ShowDialog() == DialogResult.OK)
+            {
+                pDialog.Document.Print();
+            }
+        }
+        private void ColorText(object sender, EventArgs e)
+        {
+            ColorDialog dialog = new ColorDialog();
+            dialog.ShowDialog();
+            richTextBox1.SelectionColor = dialog.Color;
+
+        }
+
+        private void SaveFile(object sender, EventArgs e)
+        {
+            SaveFileDialog openFile = new SaveFileDialog();
+            openFile.Filter = "Текстовый документ (*.txt) | *.*";
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(openFile.FileName, richTextBox1.Text);
+                _openFile = openFile.FileName;
+            }
+        }
+
+        private void Reference(object sender, EventArgs e)
+        {
+            MessageBox.Show("Текстовый редактор");
+        }
+        private void Copy(object sender, EventArgs e)
+        {
+            richTextBox1.Copy();
+        }
+
+        private void Paste(object sender, EventArgs e)
+        {
+            richTextBox1.Paste();
+        }
+
+        private void Cut(object sender, EventArgs e)
+        {
+            richTextBox1.Cut();
+        }
     }
 }
+
+
+
+
